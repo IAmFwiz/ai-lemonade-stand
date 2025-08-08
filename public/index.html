@@ -969,6 +969,8 @@
                                 <span class="example-chip" onclick="setInstruction('I need 10 lemonades')">"I need 10 lemonades"</span>
                                 <span class="example-chip" onclick="setInstruction('Get me 3 lemonades using my credit card')">"Get me 3 lemonades using my credit card"</span>
                                 <span class="example-chip" onclick="setInstruction('Purchase 7 lemonades with USDC')">"Purchase 7 lemonades with USDC"</span>
+                                <span class="example-chip" onclick="setInstruction('Pay for 4 lemonades with PayPal')">"Pay for 4 lemonades with PayPal"</span>
+                                <span class="example-chip" onclick="setInstruction('Use Stripe to buy 6 lemonades')">"Use Stripe to buy 6 lemonades"</span>
                             </div>
                         </div>
                     </div>
@@ -1494,6 +1496,7 @@
                                 
                                 <div class="transaction-amount">
                                     <strong>Amount:</strong> $${transaction.amount.toFixed(2)} USDC
+                                    ${transaction.paymentProcessor ? `<br><small style="color: #a3bffa;">🏦 Processed via ${transaction.paymentProcessor}</small>` : ''}
                                 </div>
                                 
                                 <div class="transaction-description">
@@ -1848,7 +1851,7 @@
         function parseInstruction(instruction) {
             const text = instruction.toLowerCase();
             let quantity = 1;
-            let paymentMethod = 'auto'; // 'auto', 'usdc', 'creditCard'
+            let paymentMethod = 'auto'; // 'auto', 'usdc', 'creditCard', 'paypal', 'stripe'
             let quality = 'standard'; // 'standard', 'premium'
             
             // Extract quantity - handle various patterns like "48 cups of lemonade", "5 lemonades", "3 lemonade"
@@ -1866,6 +1869,10 @@
             // Extract payment method
             if (text.includes('usdc') || text.includes('stablecoin')) {
                 paymentMethod = 'usdc';
+            } else if (text.includes('paypal') || text.includes('pay pal')) {
+                paymentMethod = 'paypal';
+            } else if (text.includes('stripe')) {
+                paymentMethod = 'stripe';
             } else if (text.includes('credit') || text.includes('card') || text.includes('visa')) {
                 paymentMethod = 'creditCard';
             }
@@ -1929,8 +1936,11 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    const paymentMethodText = finalPaymentMethod === 'usdc' ? 'USDC Stablecoin' : 'Visa Credit Card';
-                    const message = `🤖 Agent Response:\n\n✅ Purchase executed successfully!\n\n📋 Instruction: "${instruction}"\n💳 Payment Method: ${paymentMethodText}\n🚚 Delivery Service: ${result.deliveryService}\n🍋 Lemonade Stand: ${result.lemonadeStand}\n📦 Quantity: ${result.quantity}\n💰 Total Cost: $${result.totalCost.toFixed(2)}\n🚚 Delivery Fee: $${result.deliveryFee.toFixed(2)}\n💵 Total: $${result.totalWithDelivery.toFixed(2)}\n💳 Remaining Balance: $${result.remainingBalance.toFixed(2)}`;
+                    const paymentMethodText = finalPaymentMethod === 'usdc' ? 'USDC Stablecoin' : 
+                                            finalPaymentMethod === 'paypal' ? 'PayPal' :
+                                            finalPaymentMethod === 'stripe' ? 'Stripe' :
+                                            'Visa Credit Card';
+                    const message = `🤖 Agent Response:\n\n✅ Purchase executed successfully!\n\n📋 Instruction: "${instruction}"\n💳 Payment Method: ${paymentMethodText}\n🏦 Payment Processor: ${result.paymentProcessor}\n💸 Processing Fee: $${result.processingFee.toFixed(2)}\n🚚 Delivery Service: ${result.deliveryService}\n🍋 Lemonade Stand: ${result.lemonadeStand}\n📦 Quantity: ${result.quantity}\n💰 Total Cost: $${result.totalCost.toFixed(2)}\n🚚 Delivery Fee: $${result.deliveryFee.toFixed(2)}\n💵 Total: $${result.totalWithDelivery.toFixed(2)}\n💳 Remaining Balance: $${result.remainingBalance.toFixed(2)}`;
                     
                     alert(message);
                     loadData(); // Refresh data to show updated agent status

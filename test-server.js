@@ -935,6 +935,18 @@ app.get('/api/wholesalers', (req, res) => {
   res.json(sampleWholesalers);
 });
 
+// Payment processor mapping for ACK integration
+function getPaymentProcessor(paymentMethod) {
+  const processors = {
+    'usdc': { name: 'ACK-USDC', type: 'stablecoin', fee: 0 },
+    'creditCard': { name: 'Visa/Mastercard', type: 'traditional', fee: 0.029 },
+    'paypal': { name: 'PayPal', type: 'digital_wallet', fee: 0.029 },
+    'stripe': { name: 'Stripe', type: 'payment_processor', fee: 0.029 },
+    'auto': { name: 'ACK-Auto', type: 'intelligent_routing', fee: 0.015 }
+  };
+  return processors[paymentMethod] || processors['auto'];
+}
+
 // Agent prompt endpoint (simplified)
 app.post('/api/agents/:agentId/prompt', (req, res) => {
   const { quantity, paymentMethod, quality } = req.body;
@@ -964,9 +976,13 @@ app.post('/api/agents/:agentId/prompt', (req, res) => {
   const selectedService = deliveryServices[Math.floor(Math.random() * deliveryServices.length)];
   const totalCost = fulfillmentPlan.totalCost;
   const deliveryFee = Math.random() * 5 + 2;
-  const totalWithDelivery = totalCost + deliveryFee;
   
-  // Update agent balance
+  // Get payment processor and calculate fees
+  const processor = getPaymentProcessor(paymentMethod);
+  const processingFee = totalCost * processor.fee;
+  const totalWithDelivery = totalCost + deliveryFee + processingFee;
+  
+  // Update agent balance based on payment method
   if (paymentMethod === 'usdc') {
     agent.wallet.usdcBalance -= totalWithDelivery;
   } else {
@@ -988,6 +1004,7 @@ app.post('/api/agents/:agentId/prompt', (req, res) => {
       amount: fulfillment.cost,
       description: `${fulfillment.quantity} lemonades from ${fulfillment.stand.name} (${fulfillment.source.replace(/_/g, ' ')}) at $${fulfillment.stand.pricing.currentPrice} each`,
       timestamp: new Date().toISOString(),
+      paymentProcessor: processor.name,
       details: {
         quantity: fulfillment.quantity,
         source: fulfillment.source,
@@ -1010,6 +1027,7 @@ app.post('/api/agents/:agentId/prompt', (req, res) => {
     amount: totalCost,
     description: `Order Summary: ${quantity} total lemonades via ${paymentMethod} (fulfilled by ${uniqueStandNames.length} stand(s))`,
     timestamp: new Date().toISOString(),
+    paymentProcessor: processor.name,
     details: {
       totalQuantity: quantity,
       totalCost: totalCost,
@@ -1032,6 +1050,8 @@ app.post('/api/agents/:agentId/prompt', (req, res) => {
     agent: agent.name,
     quantity: quantity,
     paymentMethod: paymentMethod,
+    paymentProcessor: processor.name,
+    processingFee: processingFee,
     deliveryService: selectedService,
     fulfillmentPlan: fulfillmentPlan,
     totalCost: totalCost,
