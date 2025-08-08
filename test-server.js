@@ -346,7 +346,26 @@ app.get('/api/wholesalers', (req, res) => {
 });
 
 app.get('/api/transactions', (req, res) => {
-  res.json(sampleTransactions);
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = parseInt(req.query.pageSize) || 5;
+  
+  const startIndex = (page - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const transactions = sampleTransactions.slice(startIndex, endIndex);
+  
+  const pagination = {
+    currentPage: page,
+    pageSize: pageSize,
+    totalPages: Math.ceil(sampleTransactions.length / pageSize),
+    totalTransactions: sampleTransactions.length,
+    hasNextPage: endIndex < sampleTransactions.length,
+    hasPreviousPage: page > 1
+  };
+  
+  res.json({
+    transactions: transactions,
+    pagination: pagination
+  });
 });
 
 app.get('/api/transactions/system', (req, res) => {
