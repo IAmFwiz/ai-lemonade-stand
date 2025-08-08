@@ -1181,15 +1181,15 @@
                             <h3 style="color: #667eea; font-size: 1.3em; margin-bottom: 12px; text-shadow: 0 0 10px rgba(102, 126, 234, 0.3);">${ryansAgent.name}</h3>
                             <div style="background: rgba(102, 126, 234, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0; border-left: 3px solid #667eea;">
                                 <h4 style="color: #667eea; font-size: 0.9em; margin-bottom: 5px;">🔐 ACK-ID Verification</h4>
-                                <p style="font-size: 0.8em; margin: 2px 0;"><strong>Agent ID:</strong> ${ryansAgent.id}</p>
-                                <p style="font-size: 0.8em; margin: 2px 0;"><strong>Public Key:</strong> 0x7f3a...9c2d</p>
-                                <p style="font-size: 0.8em; margin: 2px 0;"><strong>Signature Verified:</strong> ✅ Valid</p>
+                                <p style="font-size: 0.8em; margin: 2px 0; color: #e2e8f0;"><strong>Agent ID:</strong> ${ryansAgent.id}</p>
+                                <p style="font-size: 0.8em; margin: 2px 0; color: #e2e8f0;"><strong>Public Key:</strong> 0x7f3a...9c2d</p>
+                                <p style="font-size: 0.8em; margin: 2px 0; color: #e2e8f0;"><strong>Signature Verified:</strong> ✅ Valid</p>
                             </div>
                             <div style="background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0; border-left: 3px solid #10b981;">
                                 <h4 style="color: #10b981; font-size: 0.9em; margin-bottom: 5px;">💳 ACK-Pay Wallets</h4>
-                                <p style="font-size: 0.8em; margin: 2px 0;"><strong>USDC Balance:</strong> $${ryansAgent.wallet.usdcBalance.toFixed(2)} USDC</p>
-                                <p style="font-size: 0.8em; margin: 2px 0;"><strong>USDC Address:</strong> 0x9f2a...4e1b</p>
-                                <p style="font-size: 0.8em; margin: 2px 0;"><strong>Credit Card:</strong> $${ryansAgent.wallet.creditCardBalance.toFixed(2)} USD</p>
+                                <p style="font-size: 0.8em; margin: 2px 0; color: #e2e8f0;"><strong>USDC Balance:</strong> $${ryansAgent.wallet.usdcBalance.toFixed(2)} USDC</p>
+                                <p style="font-size: 0.8em; margin: 2px 0; color: #e2e8f0;"><strong>USDC Address:</strong> 0x9f2a...4e1b</p>
+                                <p style="font-size: 0.8em; margin: 2px 0; color: #e2e8f0;"><strong>Credit Card:</strong> $${ryansAgent.wallet.creditCardBalance.toFixed(2)} USD</p>
                             </div>
                             <p><strong>Reputation Score:</strong> ${ryansAgent.reputation.score}/100</p>
                             <div class="agent-status">
@@ -1508,11 +1508,11 @@
                                 <div class="agent-info">
                                     <div class="agent-from">
                                         <strong>From:</strong> ${transaction.fromAgent}
-                                        <br><small style="color: #667eea;">🔐 ACK-ID: ${transaction.fromAgent} (Verified)</small>
+                                        <br><small style="color: #667eea; font-weight: 600;">🔐 ACK-ID: ${transaction.fromAgent} (Verified)</small>
                                     </div>
                                     <div class="agent-to">
                                         <strong>To:</strong> ${transaction.toAgent}
-                                        <br><small style="color: #10b981;">💳 ACK-Pay: ${transaction.paymentProcessor || 'USDC'}</small>
+                                        <br><small style="color: #10b981; font-weight: 600;">💳 ACK-Pay: ${transaction.paymentProcessor || 'USDC'}</small>
                                     </div>
                                 </div>
                                 
@@ -1928,13 +1928,13 @@
             agentStatus.innerHTML = `
                 <div style="background: rgba(102, 126, 234, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0; border-left: 3px solid #667eea;">
                     <h4 style="color: #667eea; font-size: 0.9em; margin-bottom: 5px;">🔐 ACK-ID Verification Process</h4>
-                    <p style="font-size: 0.8em; margin: 2px 0;">✅ Agent identity verified</p>
-                    <p style="font-size: 0.8em; margin: 2px 0;">✅ Cryptographic signature valid</p>
-                    <p style="font-size: 0.8em; margin: 2px 0;">✅ Authorization confirmed</p>
+                    <p style="font-size: 0.8em; margin: 2px 0; color: #e2e8f0;">✅ Agent identity verified</p>
+                    <p style="font-size: 0.8em; margin: 2px 0; color: #e2e8f0;">✅ Cryptographic signature valid</p>
+                    <p style="font-size: 0.8em; margin: 2px 0; color: #e2e8f0;">✅ Authorization confirmed</p>
                 </div>
                 <div style="background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0; border-left: 3px solid #10b981;">
                     <h4 style="color: #10b981; font-size: 0.9em; margin-bottom: 5px;">💳 ACK-Pay Processing</h4>
-                    <p style="font-size: 0.8em; margin: 2px 0;">🔄 Determining optimal payment method...</p>
+                    <p style="font-size: 0.8em; margin: 2px 0; color: #e2e8f0;">🔄 Determining optimal payment method...</p>
                 </div>
                 <span class="status-indicator">🤖 Agent processing: "${instruction}"</span>
             `;
