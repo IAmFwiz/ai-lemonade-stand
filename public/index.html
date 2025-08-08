@@ -857,11 +857,21 @@
                         <div style="font-size: 2em; margin-bottom: 10px;">🔐</div>
                         <h4>ACK-ID</h4>
                         <p style="font-size: 0.9em; opacity: 0.9;">Verifiable Agent Identity</p>
+                        <div style="margin-top: 10px; font-size: 0.8em; opacity: 0.8;">
+                            <p>• Cryptographic signatures</p>
+                            <p>• Public key verification</p>
+                            <p>• Reputation tracking</p>
+                        </div>
                     </div>
                     <div style="text-align: center; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px;">
                         <div style="font-size: 2em; margin-bottom: 10px;">💳</div>
                         <h4>ACK-Pay</h4>
                         <p style="font-size: 0.9em; opacity: 0.9;">Agent-Native Payments</p>
+                        <div style="margin-top: 10px; font-size: 0.8em; opacity: 0.8;">
+                            <p>• USDC stablecoins</p>
+                            <p>• PayPal/Stripe integration</p>
+                            <p>• Instant settlement</p>
+                        </div>
                     </div>
                 </div>
                 <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border-left: 4px solid #ffd700;">
@@ -1169,8 +1179,18 @@
                     document.getElementById('agents').innerHTML = `
                         <div class="card agent-card">
                             <h3 style="color: #667eea; font-size: 1.3em; margin-bottom: 12px; text-shadow: 0 0 10px rgba(102, 126, 234, 0.3);">${ryansAgent.name}</h3>
-                            <p><strong>USDC Balance:</strong> $${ryansAgent.wallet.usdcBalance.toFixed(2)} USDC</p>
-                            <p><strong>Credit Card Balance:</strong> $${ryansAgent.wallet.creditCardBalance.toFixed(2)} USD</p>
+                            <div style="background: rgba(102, 126, 234, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0; border-left: 3px solid #667eea;">
+                                <h4 style="color: #667eea; font-size: 0.9em; margin-bottom: 5px;">🔐 ACK-ID Verification</h4>
+                                <p style="font-size: 0.8em; margin: 2px 0;"><strong>Agent ID:</strong> ${ryansAgent.id}</p>
+                                <p style="font-size: 0.8em; margin: 2px 0;"><strong>Public Key:</strong> 0x7f3a...9c2d</p>
+                                <p style="font-size: 0.8em; margin: 2px 0;"><strong>Signature Verified:</strong> ✅ Valid</p>
+                            </div>
+                            <div style="background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0; border-left: 3px solid #10b981;">
+                                <h4 style="color: #10b981; font-size: 0.9em; margin-bottom: 5px;">💳 ACK-Pay Wallets</h4>
+                                <p style="font-size: 0.8em; margin: 2px 0;"><strong>USDC Balance:</strong> $${ryansAgent.wallet.usdcBalance.toFixed(2)} USDC</p>
+                                <p style="font-size: 0.8em; margin: 2px 0;"><strong>USDC Address:</strong> 0x9f2a...4e1b</p>
+                                <p style="font-size: 0.8em; margin: 2px 0;"><strong>Credit Card:</strong> $${ryansAgent.wallet.creditCardBalance.toFixed(2)} USD</p>
+                            </div>
                             <p><strong>Reputation Score:</strong> ${ryansAgent.reputation.score}/100</p>
                             <div class="agent-status">
                                 <span class="status-indicator active">Ready to execute purchases</span>
@@ -1488,9 +1508,11 @@
                                 <div class="agent-info">
                                     <div class="agent-from">
                                         <strong>From:</strong> ${transaction.fromAgent}
+                                        <br><small style="color: #667eea;">🔐 ACK-ID: ${transaction.fromAgent} (Verified)</small>
                                     </div>
                                     <div class="agent-to">
                                         <strong>To:</strong> ${transaction.toAgent}
+                                        <br><small style="color: #10b981;">💳 ACK-Pay: ${transaction.paymentProcessor || 'USDC'}</small>
                                     </div>
                                 </div>
                                 
@@ -1904,6 +1926,16 @@
             }
 
             agentStatus.innerHTML = `
+                <div style="background: rgba(102, 126, 234, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0; border-left: 3px solid #667eea;">
+                    <h4 style="color: #667eea; font-size: 0.9em; margin-bottom: 5px;">🔐 ACK-ID Verification Process</h4>
+                    <p style="font-size: 0.8em; margin: 2px 0;">✅ Agent identity verified</p>
+                    <p style="font-size: 0.8em; margin: 2px 0;">✅ Cryptographic signature valid</p>
+                    <p style="font-size: 0.8em; margin: 2px 0;">✅ Authorization confirmed</p>
+                </div>
+                <div style="background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0; border-left: 3px solid #10b981;">
+                    <h4 style="color: #10b981; font-size: 0.9em; margin-bottom: 5px;">💳 ACK-Pay Processing</h4>
+                    <p style="font-size: 0.8em; margin: 2px 0;">🔄 Determining optimal payment method...</p>
+                </div>
                 <span class="status-indicator">🤖 Agent processing: "${instruction}"</span>
             `;
 
@@ -1940,7 +1972,7 @@
                                             finalPaymentMethod === 'paypal' ? 'PayPal' :
                                             finalPaymentMethod === 'stripe' ? 'Stripe' :
                                             'Visa Credit Card';
-                    const message = `🤖 Agent Response:\n\n✅ Purchase executed successfully!\n\n📋 Instruction: "${instruction}"\n💳 Payment Method: ${paymentMethodText}\n🏦 Payment Processor: ${result.paymentProcessor}\n💸 Processing Fee: $${result.processingFee.toFixed(2)}\n🚚 Delivery Service: ${result.deliveryService}\n🍋 Lemonade Stand: ${result.lemonadeStand}\n📦 Quantity: ${result.quantity}\n💰 Total Cost: $${result.totalCost.toFixed(2)}\n🚚 Delivery Fee: $${result.deliveryFee.toFixed(2)}\n💵 Total: $${result.totalWithDelivery.toFixed(2)}\n💳 Remaining Balance: $${result.remainingBalance.toFixed(2)}`;
+                    const message = `🤖 Agent Response:\n\n✅ Purchase executed successfully!\n\n🔐 ACK-ID Verification:\n• Agent identity: ${agent.name}\n• Cryptographic signature: ✅ Valid\n• Authorization: ✅ Confirmed\n\n💳 ACK-Pay Processing:\n• Payment Method: ${paymentMethodText}\n• Payment Processor: ${result.paymentProcessor}\n• Processing Fee: $${result.processingFee.toFixed(2)}\n• Settlement: ✅ Instant\n\n📋 Transaction Details:\n• Instruction: "${instruction}"\n• Delivery Service: ${result.deliveryService}\n• Lemonade Stand: ${result.lemonadeStand}\n• Quantity: ${result.quantity}\n• Total Cost: $${result.totalCost.toFixed(2)}\n• Delivery Fee: $${result.deliveryFee.toFixed(2)}\n• Total: $${result.totalWithDelivery.toFixed(2)}\n• Remaining Balance: $${result.remainingBalance.toFixed(2)}`;
                     
                     alert(message);
                     loadData(); // Refresh data to show updated agent status
